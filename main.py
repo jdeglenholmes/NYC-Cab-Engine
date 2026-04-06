@@ -8,6 +8,7 @@ from src.utils.db_tools import get_engine, initialise_schemas, fast_postgres_upl
 from src.ingest.taxi_ingest import fetch_taxi_data, JourneyType
 from src.config.settings import resolve_journey_type
 from src.transform.taxi_transformer import optimise_types
+from src.transform.taxi_validation import validate_tripdata
 
 def run_pipeline(journey_type, year, month):
 
@@ -18,10 +19,13 @@ def run_pipeline(journey_type, year, month):
 
     df = fetch_taxi_data(journey_type, year, month)
     if df is not None:
-        # Transformation step
+        # Transformation layer
         df = optimise_types(df, journey_type)
 
-        # High Speed Upload layer: passes NYC taxi data to bronze layer
+        # Validation layer
+        df = validate_tripdata(df)
+
+        # Upload Layer
         table_name = f"{journey_type.value}_tripdata_silver"
         df.head(0).to_sql(table_name, engine, schema='silver', if_exists='replace', index=False)
         fast_postgres_upload(df, table_name, engine =engine, schema='silver')
