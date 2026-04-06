@@ -29,7 +29,7 @@ def initialise_schemas(engine):
     Creates the Medallion architecture schemas (bronze, silver, gold).
     Uses engine.begin() to automatically commit changes.
     """
-    schemas = ['bronze', 'silver', 'gold']
+    schemas = ['logging', 'bronze', 'silver', 'gold']
     
     print("🛠️  Initializing database schemas...")
     
@@ -44,7 +44,7 @@ def initialise_schemas(engine):
     
     print("🚀 Medallion layers are fully initialized.")
 
-def fast_postgres_upload(df, table_name, engine, schema='bronze'):
+def fast_postgres_upload(df, table_name, engine, schema):
     """
     High-speed upload using PostgreSQL COPY command via memory buffer.
     """

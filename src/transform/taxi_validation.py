@@ -16,4 +16,4 @@ def validate_tripdata(df: pd.DataFrame) -> pd.DataFrame:
     # Locate and return rows which pass constraints
     constraints_matrix = pd.concat(constraints, axis=1)
     failed_rows = df[~constraints_matrix.all(axis=1)]
-    return df.drop(failed_rows.index)
+    return df.drop(failed_rows.index), failed_rows

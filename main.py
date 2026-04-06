@@ -17,18 +17,25 @@ def run_pipeline(journey_type, year, month):
     engine = get_engine()
     initialise_schemas(engine) 
 
-    df = fetch_taxi_data(journey_type, year, month)
-    if df is not None:
+    df_bronze = fetch_taxi_data(journey_type, year, month)
+
+    if df_bronze is not None:
         # Transformation layer
-        df = optimise_types(df, journey_type)
+        df_silver = optimise_types(df_bronze, journey_type)
 
         # Validation layer
-        df = validate_tripdata(df)
-
+        df_gold, df_quarantine = validate_tripdata(df_silver)
+        if not df_quarantine.empty:
+            # Generate empty logging table for fast upload
+            df_quarantine.head(0).to_sql("erroneous_tripdata", engine, schema="logging", if_exists="append", index=False)
+            fast_postgres_upload(df_quarantine, "erroneous_tripdata", engine, schema="logging")
+            print(f"⚠️ {len(df_quarantine)} rows labelled as erroneous and moved to 'logging'.")
+        
         # Upload Layer
-        table_name = f"{journey_type.value}_tripdata_silver"
-        df.head(0).to_sql(table_name, engine, schema='silver', if_exists='replace', index=False)
-        fast_postgres_upload(df, table_name, engine =engine, schema='silver')
+        table_name = f"{journey_type.value}_tripdata_gold"
+        # Generate empty gold table ready for fast upload
+        df_gold.head(0).to_sql(table_name, engine, schema="gold", if_exists="replace", index=False)
+        fast_postgres_upload(df_gold, table_name, engine =engine, schema="gold")
 
 if __name__ == "__main__":
     # Initialise Parser: handle command line strings to python objects 
