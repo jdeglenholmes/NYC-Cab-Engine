@@ -1,9 +1,10 @@
 # NYC-Cab-Engine 🚖
 
-A production-ready Medallion Data Architecture pipeline built to ingest, clean, and optimize massive-scale NYC Taxi & Limousine Commission (TLC) datasets. This project demonstrates the transition from flat-file analysis to a modular, containerized ETL system.
+A Medallion Data Architecture pipeline built to ingest, clean, and optimize NYC Taxi & Limousine Commission (TLC) datasets. I created this project to demonstrate my ability to transition from flat-file analysis to a modular, containerized ETL system.
 
 ## 📌 Overview
-NYC-Cab-Engine automates the lifecycle of urban mobility data. It handles the ingestion of raw, inconsistent Parquet files into a structured PostgreSQL warehouse. By implementing a **Schema Registry pattern**, the pipeline dynamically adapts to different journey types (Yellow, Green, FHV) while enforcing strict data types to minimize memory overhead and ensure "Silver-layer" data quality.
+`NYC-Cab-Engine` allows users to handle and ingest inconsistent Parquet files from the NYC TLC datasets into a structured PostgreSQL warehouse. 
+By implementing a **Schema Registry pattern**, the pipeline dynamically adapts to different journey types (Yellow, Green, FHV) while enforcing strict data types to minimize memory overhead and ensure "Gold-layer" data quality.
 
 ## 🛠️ Tech Stack
 - **Language:** Python (Pandas/Polars)
@@ -46,7 +47,7 @@ python main.py --type yellow --year 2026 --month 1
 ```
 
 ### 🧠 Developer Story: Engineering for Scale
-Transitioning this project from a Jupyter Notebook to a modular system allowed me to solve several "Production-Grade" engineering challenges.
+For this project, I transitioned away from a Jupyter Notebook toward a modular system which allowed me to solve production-grade engineering challenges.
 
 | Feature | The "Prototype" (Analyst)  | The "Production"(Engineer) | Skill Demonstrated |
 | :--- | :--- | :--- | :--- |
@@ -63,6 +64,7 @@ Transitioning this project from a Jupyter Notebook to a modular system allowed m
 PICKUP_DATETIME      DROPOFF_DATETIME     PAYMENT_LABEL   VENDOR_LABEL   TOTAL_AMOUNT
 2026-01-01 10:00     2026-01-01 10:15     Credit Card     VeriFone       15.50
 2026-01-01 11:30     2026-01-01 11:45     Cash            CMT            12.00
+...
 ```
 
 ### ❓ Troubleshooting
