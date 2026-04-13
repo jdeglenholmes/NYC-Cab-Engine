@@ -48,8 +48,6 @@ python main.py --type yellow --year 2026 --month 1
 ### 🧠 Developer Story: Engineering for Scale
 Transitioning this project from a Jupyter Notebook to a modular system allowed me to solve several "Production-Grade" engineering challenges.
 
-
-
 | Feature | The "Prototype" (Analyst)  | The "Production"(Engineer) | Skill Demonstrated |
 | :--- | :--- | :--- | :--- |
 | **Schema Drift** | Hardcoded column names. | **Schema Registry Pattern** Dynamic config for Yellow/Green/FHV. | Scalability & Robustness |
@@ -59,10 +57,16 @@ Transitioning this project from a Jupyter Notebook to a modular system allowed m
 **Portability** | Hardcoded credentials | **Environment Injection:** Secure `.env` & Docker management. | Security & DevOps |
 
 
-### 📊 Sample Silver Output
-`yellow_tripdata_silver`
+### 📊 Sample Gold Output
+`yellow_tripdata_gold`
 ```
 PICKUP_DATETIME      DROPOFF_DATETIME     PAYMENT_LABEL   VENDOR_LABEL   TOTAL_AMOUNT
 2026-01-01 10:00     2026-01-01 10:15     Credit Card     VeriFone       15.50
 2026-01-01 11:30     2026-01-01 11:45     Cash            CMT            12.00
 ```
+
+### ❓ Troubleshooting
+| Issue | Cause  | Solution |
+| :--- | :--- | :--- |
+| `ConnectionRefusedError`| Docker is not running. | Open Docker desktop and run `docker-compose up -d`. |
+| `Database not found`| Volume not persisted | Ensure you didn't run `docker-compose down -v` (which deletes data) |

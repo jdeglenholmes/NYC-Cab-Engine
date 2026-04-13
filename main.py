@@ -38,37 +38,44 @@ def run_pipeline(journey_type, year, month):
         fast_postgres_upload(df_gold, table_name, engine =engine, schema="gold")
 
 if __name__ == "__main__":
-    # Initialise Parser: handle command line strings to python objects 
-    parser = argparse.ArgumentParser(description="NYC Taxi Medallion Pipeline")
-
+    # Initialise parser and define accepted arguments
+    parser = argparse.ArgumentParser(description="Data pipeline to fetch and clean timebound taxi journey data for New York City")
     parser.add_argument("--type", type=str, required=True, help="Journey Type: (yellow, green, fhv, fhvhv)")
-
     parser.add_argument("--year", type=int, required=True, help="Year (i.e. 2026)")
-
     parser.add_argument("--month", type=int, required=True, help="Month (i.e. 1)")
 
-    # Parse arguments
     args = parser.parse_args()
 
+    # Resolve JourneyType based on user input
     try:
-        # Pass type argument to function to resolve
-        resolved_type = resolve_journey_type(args.type)
-
+       resolved_type = resolve_journey_type(args.type)
     except Exception as e:
-        print(f"Failed to parse journey type. Valid journey types include: {[journey_type.value for journey_type in JourneyType]}")
+        print(f"❌ Failed to parse journey type: {e}")
+        sys.exit(1)
 
+    # Check database connection
+    print("🔌 Checking database connection...")
     try:
-        # Execute data pipeline using passed arguments
+        engine = get_engine()
+        with engine.connect() as conn:
+            pass
+        print("✅ Database connection established.")
+    except Exception:
+        print("\n" + "!"*50)
+        print("❌ DATABASE CONNECTION FAILED")
+        print("   Is Docker Desktop running?")
+        print("   Run 'docker-compose up -d' and try again.")
+        print("!"*50 + "\n")
+        sys.exit(1)
+
+    # Run pipeline
+    try:
         run_pipeline(journey_type=resolved_type, year=args.year, month=args.month)
-
     except Exception as e:
-        print(f"❌ Pipeline Failed: {e}")
-        sys.exit(1) # Signal a failure to the OS
-
+        print(f"💥 Pipeline crashed during execution: {e}")
+        sys.exit(1)
+        
 """
 Example usage:
-    
     Python main.py --type green -- year 2026 --month 1
-
-    http://localhost:5050
 """
